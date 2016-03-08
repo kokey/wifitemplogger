@@ -111,8 +111,9 @@ int ICACHE_FLASH_ATTR ds18b20()
 	os_sprintf(temperaturestr, "%c%d.%d", SignBit ? '-' : '+', Whole, Fract < 10 ? 0 : Fract);
 	os_printf("Temperature: %s Celsius\r\n", temperaturestr);
 
+	char submiturl[64] = SUBMITURL; /* e.g. http://blah.com/temperature?level= */
 	char webgetstr[80];
-	os_sprintf(webgetstr, "http://netopti.net/temperature?level=%s", temperaturestr);
+	os_sprintf(webgetstr, "%s%s", submiturl, temperaturestr);
 
 	if (wifi_station_get_connect_status() == 5) {
 		// 5 = STATION_GOT_IP I think
@@ -155,11 +156,7 @@ void wifi_wait_and_send(void *arg) {
     if (wifi_station_get_connect_status() == 5) {
 		// 5 = STATION_GOT_IP I think
 
-		os_printf("got IP, try first get request\n\r");
-		http_get("http://netopti.net/tryone", "", http_callback_example);
-
-		http_get("http://netopti.net/trytwo", "", http_callback_example);
-		os_printf("second get request attempted\n\r");
+		os_printf("SUCCESS: got IP address\n\r");
 	} else {
 		os_timer_setfn(&WiFiLinker, (os_timer_func_t *)wifi_wait_and_send, NULL);
 		os_timer_arm(&WiFiLinker, 1000, 0);

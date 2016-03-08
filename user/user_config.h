@@ -10,3 +10,6 @@
 #define SSID_PASS "your wifi access point password"
 #endif
 
+#ifndef SUBMITURL
+#define SUBMITURL "http://netopti.net/temperature?level="
+#endif
